@@ -1,4 +1,4 @@
-cd ../../../../WebCrawlerServerCommon
+cd ../../../../WebCrawlerServerV2Common
 mvn source:jar install
-cd ../WebCrawlerServerSlave
+cd ../WebCrawlerServerV2Slave
 mvn eclipse:eclipse -DdownloadSources=true

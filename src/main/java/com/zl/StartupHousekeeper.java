@@ -6,13 +6,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import com.zl.daemons.CommandSender;
 import com.zl.daemons.CrawlWebDaemon;
 import com.zl.daemons.ParseWebContentDaemon;
 import com.zl.daemons.ReportJobDaemon;
 import com.zl.daemons.SlaveMgntDaemon;
 import com.zl.daemons.ThreadPoolDaemon;
-import com.zl.interfaces.ISocketListenerDaemon;
+import com.zl.interfaces.IServerSocketListenerDaemon;
+import com.zl.managers.JobManager;
+import com.zl.sockets.JobListenerCallback;
 import com.zl.utils.SimpleLogger;
 
 @Component
@@ -36,10 +37,10 @@ public class StartupHousekeeper implements ApplicationListener<ContextRefreshedE
 	public ParseWebContentDaemon parseWebContentDaemon;
 	
 	@Autowired
-	public ISocketListenerDaemon socketListenerDaemon;
+	public IServerSocketListenerDaemon serverSocketListenerDaemon;
 	
 	@Autowired
-	public CommandSender commandSender;
+	private JobManager jobManager;
 	
 	@Override
 	public void onApplicationEvent(final ContextRefreshedEvent event) {
@@ -53,7 +54,8 @@ public class StartupHousekeeper implements ApplicationListener<ContextRefreshedE
     	jobReportDaemon.start(threadPoolDaemon);
     	slaveMgntDaemon.start(threadPoolDaemon);
     	parseWebContentDaemon.start(threadPoolDaemon);
-    	socketListenerDaemon.startListening();
-    	commandSender.connect("127.0.0.1", 18080);
+
+    	serverSocketListenerDaemon.addSocketListenerCallback(new JobListenerCallback(jobManager));
+    	serverSocketListenerDaemon.start();
     }
 }

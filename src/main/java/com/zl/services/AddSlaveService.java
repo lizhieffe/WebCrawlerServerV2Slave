@@ -2,6 +2,7 @@ package com.zl.services;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,16 +12,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.zl.utils.AppProperties;
-import com.zl.utils.ConfigUtil;
 import com.zl.abstracts.AService;
-
 import com.zl.daemons.SlaveMgntDaemon;
 import com.zl.interfaces.IAddSlaveService;
+import com.zl.utils.ConfigUtil;
 
 @Service
 @Scope("prototype")
 public class AddSlaveService extends AService implements IAddSlaveService {
+	
+	@Value("${server.port}")
+	private String HTTP_PORT;
+
+	@Value("${server-socket-port}")
+	private String SOCKET_PORT;
+	
+	@Value("${master.ip}")
+	private String MASTER_NODE_IP;
+	
+	@Value("${master.port}")
+	private String MASTER_NODE_PORT;
 	
 	@Autowired
 	public SlaveMgntDaemon slaveMgntDaemon;
@@ -43,8 +54,7 @@ public class AddSlaveService extends AService implements IAddSlaveService {
 	
 	@Override
 	public String constructRequestUrl() {
-		String url = "http://" + AppProperties.getInstance().get("master.ip") + ":"
-				+ AppProperties.getInstance().get("master.port") + getUri();
+		String url = "http://" + MASTER_NODE_IP + ":" + MASTER_NODE_PORT + getUri();
 		return url;
 	}
 	
@@ -54,7 +64,8 @@ public class AddSlaveService extends AService implements IAddSlaveService {
 		header.setContentType(MediaType.APPLICATION_JSON);
 		JSONObject item = new JSONObject();
 		item.put("ip", ConfigUtil.getLocalIp());
-		item.put("port", Integer.parseInt(AppProperties.getInstance().get("server.port")));
+		item.put("port", HTTP_PORT);
+		item.put("socket_port", SOCKET_PORT);
 		return new HttpEntity<String>(item.toString(), header);
 	}
 	

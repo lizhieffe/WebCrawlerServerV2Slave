@@ -3,17 +3,16 @@ package com.zl;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-import com.zl.daemons.CommandSender;
 import com.zl.daemons.CrawlWebDaemon;
 import com.zl.daemons.ParseWebContentDaemon;
 import com.zl.daemons.ReportJobDaemon;
 import com.zl.daemons.ReportJobDaemonHelper;
+import com.zl.daemons.ServerSocketListenerDaemon;
 import com.zl.daemons.SlaveMgntDaemon;
 import com.zl.daemons.SlaveMgntDaemonHelper;
-import com.zl.daemons.SocketListenerDaemon;
 import com.zl.daemons.ThreadPoolDaemon;
 import com.zl.interfaces.IBeanConfiguration;
-import com.zl.interfaces.ISocketListenerDaemon;
+import com.zl.interfaces.IServerSocketListenerDaemon;
 
 @Component
 @Configuration
@@ -47,11 +46,7 @@ public class DaemonConfiguration implements IBeanConfiguration {
 		return new SlaveMgntDaemonHelper();
 	}
 	
-	public ISocketListenerDaemon createISocketListenerDaemon() {
-		return new SocketListenerDaemon();
-	}
-	
-	public CommandSender createCommandSender() {
-		return new CommandSender();
+	public IServerSocketListenerDaemon createIServerSocketListenerDaemon() {
+		return new ServerSocketListenerDaemon();
 	}
 }

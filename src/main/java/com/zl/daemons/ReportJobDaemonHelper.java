@@ -17,18 +17,20 @@ public class ReportJobDaemonHelper {
 	@Value("${master.ip}")
 	private String MASTER_NODE_IP;
 	
-	@Value("${master.port}")
-	private String MASTER_NODE_PORT;
+	@Value("${server-socket-port}")
+	private String MASTER_NODE_SOCKET_PORT;
 	
 	private SocketSender socketSender;
 	
-	private boolean connected;
+	private boolean connectedToMaster;
+	
 	
 	public void reportJob(AJob job) {
 		
-		if (!connected) {
-			socketSender = new SocketSender(MASTER_NODE_IP, Integer.parseInt(MASTER_NODE_PORT));
+		if (!connectedToMaster) {
+			socketSender = new SocketSender(MASTER_NODE_IP, Integer.parseInt(MASTER_NODE_SOCKET_PORT));
 			socketSender.connect();
+			connectedToMaster = true;
 		}
 		socketSender.send(job);
 	}

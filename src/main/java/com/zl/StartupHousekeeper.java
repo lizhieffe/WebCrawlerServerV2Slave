@@ -14,6 +14,7 @@ import com.zl.daemons.ThreadPoolDaemon;
 import com.zl.interfaces.IServerSocketListenerDaemon;
 import com.zl.managers.JobManager;
 import com.zl.sockets.JobListenerCallback;
+import com.zl.sockets.VerificationListenerCallback;
 import com.zl.utils.SimpleLogger;
 
 @Component
